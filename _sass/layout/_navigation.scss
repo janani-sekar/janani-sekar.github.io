@@ -181,11 +181,12 @@
     display: block;
     margin: 0 1rem;
     padding: 0.5rem 0;
-    color: var(--global-masthead-link-color);
+    color: $link-color;
+    font-family: $header-font-family;
     text-decoration: none;
 
     &:hover {
-      color: var(--global-masthead-link-color-hover);
+      color: darken($link-color, 10%);
     }
   }
 
@@ -196,7 +197,7 @@
     padding: 0 0.5rem;
     border: 0;
     outline: none;
-    background-color: var(--global-base-color);
+    background-color: $primary-color;
     color: #fff;
     cursor: pointer;
     z-index: 100;

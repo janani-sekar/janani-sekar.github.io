@@ -28,7 +28,15 @@ h1, h2, h3, h4, h5, h6 {
   margin: 2em 0 0.5em;
   line-height: 1.2;
   font-family: $header-font-family;
-  font-weight: bold;
+  font-weight: 700;
+  color: $primary-color;
+}
+
+/* Dark mode heading color */
+html[data-theme="dark"] {
+  h1, h2, h3, h4, h5, h6 {
+    color: #c8dbcb;
+  }
 }
 
 h1 {
@@ -123,6 +131,8 @@ a {
   &:active {
     outline: 0;
   }
+
+  color: var(--global-link-color);
 }
 
 /* code */

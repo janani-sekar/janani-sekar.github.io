@@ -42,7 +42,8 @@
 
   h2, h3, h4, h5, h6 {
     margin-bottom: 0;
-    font-family: $sans-serif-narrow;
+    font-family: $header-font-family;
+    color: $primary-color;
   }
 
   h3, h4 {
@@ -128,8 +129,9 @@
   }
 }
 .sidebar .author__name {
-  font-family: $sans-serif;
+  font-family: $header-font-family;
   font-size: $type-size-5;
+  color: $primary-color;
 }
 
 .sidebar .author__desktop {
@@ -253,7 +255,7 @@
     padding-right: 5px;
     padding-top: 2px;
     padding-bottom: 2px;
-    color: inherit;
+    color: var(--global-link-color);
     font-size: $type-size-5;
     text-decoration: none;
 

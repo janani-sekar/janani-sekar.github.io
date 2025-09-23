@@ -15,7 +15,7 @@ $indent-var                 : 1.3em;
 
 /* System typefaces */
 $serif                      : Georgia, Times, serif;
-$sans-serif                 : -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+$sans-serif                 : 'Nunito', -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
 $monospace                  : Monaco, Consolas, "Lucida Console", monospace;
 
 /* Sans serif typefaces */
@@ -33,15 +33,26 @@ $garamond                   : Garamond, serif;
 $type-size-1                : 2.441em;  // ~39.056px
 $type-size-2                : 1.953em;  // ~31.248px
 $type-size-3                : 1.563em;  // ~25.008px
-$type-size-4                : 1.25em;   // ~20px
-$type-size-5                : 1em;      // ~16px
-$type-size-6                : 0.75em;   // ~12px
+$type-size-4                : 1.1875em; // ~19px (slightly smaller)
+$type-size-5                : 0.9375em; // ~15px body
+$type-size-6                : 0.71875em; // ~11.5px small
 $type-size-7                : 0.6875em; // ~11px
 $type-size-8                : 0.625em;  // ~10px
 
 $global-font-family         : $sans-serif;
-$header-font-family         : $sans-serif;
+$header-font-family         : 'Averia Serif Libre', Georgia, Times, serif;
 $caption-font-family        : $serif;
+
+// Light mode accents (no background tint)
+$primary-color              : #3a5a40; // accent
+$accent-color               : #3a5a40; // used for borders/hover
+$link-color                 : #3a5a40; // link color
+$masthead-background        : var(--global-bg-color); // keep default background
+
+/* Dark mode overrides */
+:root[data-theme='dark'] {
+  --accent-color: #c8dbcb;
+}
 
 /* ==========================================================================
    Breakpoints

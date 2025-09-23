@@ -4,7 +4,7 @@
 
 .page__footer {
   @include clearfix;
-  background-color: var(--global-footer-bg-color);
+  background-color: var(--global-bg-color);
   color: var(--global-text-color-light);
 
   float: left;
@@ -41,7 +41,7 @@
   }
 
   a {
-    color: inherit;
+    color: $link-color;
     text-decoration: none;
 
     &:hover {
