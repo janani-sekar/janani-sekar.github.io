@@ -17,6 +17,7 @@
   position: absolute;
   bottom: 0em;
   height: auto;
+  z-index: 100; /* ensure footer overlays decorative elements */
   /* sticky footer fix end */
 
   margin-top: 3em;

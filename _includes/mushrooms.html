@@ -1,0 +1,53 @@
+<!-- Cute mushrooms at the bottom of the viewport (behind footer) -->
+<div class="mushroom-ground" aria-hidden="true">
+  <img
+    src="{{ base_path }}/images/mushroom1.webp"
+    alt=""
+    class="mushroom mushroom--left"
+    loading="lazy"
+    decoding="async"
+  />
+  <img
+    src="{{ base_path }}/images/mushroom2.webp"
+    alt=""
+    class="mushroom mushroom--right"
+    loading="lazy"
+    decoding="async"
+  />
+</div>
+
+<script>
+(function() {
+  function onReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onReady(function() {
+    var ground = document.querySelector('.mushroom-ground');
+    var footer = document.querySelector('.page__footer');
+    if (!ground || !footer) return;
+
+    if (!('IntersectionObserver' in window)) {
+      ground.classList.add('mushroom-ground--visible');
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+      var entry = entries[0];
+      if (entry && entry.isIntersecting) {
+        ground.classList.add('mushroom-ground--visible');
+      } else {
+        ground.classList.remove('mushroom-ground--visible');
+      }
+    }, { threshold: 0, rootMargin: '0px 0px 160px 0px' });
+
+    observer.observe(footer);
+  });
+})();
+</script>
+
+

@@ -1,0 +1,59 @@
+/* ===========================================================================
+   MUSHROOMS DECORATION
+   Fixed-position mushrooms that grow from the bottom and bounce subtly.
+   ========================================================================== */
+
+.mushroom-ground {
+  position: fixed; /* stick to viewport so it stays visible on long pages */
+  right: 1em;
+  bottom: 3.5rem; /* reveal a little more above the footer */
+  pointer-events: none; /* don't block clicks */
+  z-index: 12; /* above page content (z=5) and below masthead (z=20)/footer (z=100) */
+  display: flex;
+  justify-content: flex-end; /* cluster on the right */
+  align-items: flex-end;
+  gap: 0.25rem;
+  opacity: 0; /* default hidden until footer is near */
+  transition: opacity 300ms ease;
+}
+
+.mushroom {
+  height: clamp(60px, 10vw, 140px);
+  width: auto;
+  transform-origin: bottom center;
+  opacity: 0;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
+  animation: mushroom-grow 900ms ease-out forwards, mushroom-bounce 3.2s ease-in-out 900ms infinite;
+}
+
+.mushroom-ground--visible {
+  opacity: 1;
+}
+
+.mushroom--left {
+  margin-right: -0.15rem; /* slight overlap for depth */
+  animation-delay: 100ms, 1100ms; /* grow, then bounce */
+}
+
+.mushroom--right {
+  transform: scale(0.94); /* slight size variety */
+  animation-delay: 220ms, 1250ms;
+}
+
+@keyframes mushroom-grow {
+  0% { transform: translateY(20%) scale(0.6); opacity: 0; }
+  60% { opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes mushroom-bounce {
+  0%, 100% { transform: translateY(-2px) scale(1); }
+  50% { transform: translateY(6px) scale(1.02); } /* bounce into footer */
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mushroom { animation: none; opacity: 1; }
+}
+
+
