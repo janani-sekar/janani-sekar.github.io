@@ -8,7 +8,7 @@
   right: 1em;
   bottom: 3.5rem; /* reveal a little more above the footer */
   pointer-events: none; /* don't block clicks */
-  z-index: 12; /* above page content (z=5) and below masthead (z=20)/footer (z=100) */
+  z-index: 60; /* above page content, below footer (100) */
   display: flex;
   justify-content: flex-end; /* cluster on the right */
   align-items: flex-end;
