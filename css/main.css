@@ -188,3 +188,43 @@ a:hover {
     border-bottom: 1px solid var(--rule);
   }
 }
+
+body.error-body {
+  justify-content: center;
+  align-items: center;
+}
+
+body.error-body .sidebar {
+  display: none;
+}
+
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.error-page .error-title {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+
+.error-page .error-message {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0 0 1.25rem;
+  letter-spacing: 0.03em;
+}
+
+.error-page a {
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
