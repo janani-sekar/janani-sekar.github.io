@@ -126,8 +126,6 @@ header {
   text-decoration-color: var(--ink);
 }
 
-#puzzle.reveal-step-1 .invite,
-#puzzle.reveal-step-2 .invite,
 #puzzle.reveal-step-3 .invite {
   opacity: 0;
   pointer-events: none;
@@ -181,7 +179,12 @@ a:hover {
     flex-direction: column;
   }
 
+  #puzzle {
+    order: 0;
+  }
+
   .sidebar {
+    order: 1;
     flex: 0 0 auto;
     min-height: 35vh;
     border-right: none;

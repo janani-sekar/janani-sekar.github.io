@@ -174,7 +174,7 @@
     pathEl.setAttribute("d", d);
     pathEl.setAttribute("fill", "none");
     pathEl.setAttribute("stroke", "currentColor");
-    pathEl.setAttribute("stroke-width", "0.8");
+    pathEl.setAttribute("stroke-width", "2");
     pathEl.setAttribute("stroke-linecap", "round");
     pathEl.setAttribute("stroke-linejoin", "round");
     pathEl.setAttribute("opacity", "0.6");
