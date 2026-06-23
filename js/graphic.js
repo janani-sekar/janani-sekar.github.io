@@ -1,10 +1,20 @@
 (function () {
-  var W = 200;
-  var H = 600;
-  var R = 30;
-  var C = 6;
+  var W = 132;
+  var H = 480;
+  var R = 28;
+  var C = 9;
   var container = document.getElementById("sidebar-graphic");
   if (!container) return;
+
+  var pathState = {
+    pathEl: null,
+    totalLength: 0,
+    linkedToReveal: true,
+    playProgress: 0,
+    maxPlaySteps: 10
+  };
+
+  var pathClickHandler = null;
 
   function rndInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
@@ -27,82 +37,7 @@
     { dr: 0, dc: 1, out: "e", in: "w" }
   ];
 
-  var cell = [];
-  for (var r = 0; r < R; r++) {
-    cell[r] = [];
-    for (var c = 0; c < C; c++) {
-      cell[r][c] = { n: false, s: false, e: false, w: false };
-    }
-  }
-
-  function carve(r, c) {
-    var order = shuffle([0, 1, 2, 3]);
-    for (var i = 0; i < 4; i++) {
-      var d = dirs[order[i]];
-      var nr = r + d.dr;
-      var nc = c + d.dc;
-      if (nr >= 0 && nr < R && nc >= 0 && nc < C && !cell[nr][nc].n && !cell[nr][nc].s && !cell[nr][nc].e && !cell[nr][nc].w) {
-        cell[r][c][d.out] = true;
-        cell[nr][nc][d.in] = true;
-        carve(nr, nc);
-      }
-    }
-  }
-  carve(0, 0);
-
-  var cw = W / C;
-  var ch = H / R;
-
-  var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-  var walls = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  walls.setAttribute("stroke", "currentColor");
-  walls.setAttribute("stroke-width", "0.6");
-  walls.setAttribute("opacity", "0.35");
-
-  for (var r = 0; r < R; r++) {
-    for (var c = 0; c < C; c++) {
-      var x0 = c * cw;
-      var y0 = r * ch;
-      if (!cell[r][c].n) {
-        var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l.setAttribute("x1", x0);
-        l.setAttribute("y1", y0);
-        l.setAttribute("x2", x0 + cw);
-        l.setAttribute("y2", y0);
-        walls.appendChild(l);
-      }
-      if (!cell[r][c].w) {
-        var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l.setAttribute("x1", x0);
-        l.setAttribute("y1", y0);
-        l.setAttribute("x2", x0);
-        l.setAttribute("y2", y0 + ch);
-        walls.appendChild(l);
-      }
-      if (c === C - 1) {
-        var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l.setAttribute("x1", x0 + cw);
-        l.setAttribute("y1", y0);
-        l.setAttribute("x2", x0 + cw);
-        l.setAttribute("y2", y0 + ch);
-        walls.appendChild(l);
-      }
-      if (r === R - 1) {
-        var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l.setAttribute("x1", x0);
-        l.setAttribute("y1", y0 + ch);
-        l.setAttribute("x2", x0 + cw);
-        l.setAttribute("y2", y0 + ch);
-        walls.appendChild(l);
-      }
-    }
-  }
-  svg.appendChild(walls);
-
-  function neighbors(rc) {
+  function neighbors(cell, rc) {
     var r = rc[0];
     var c = rc[1];
     var out = [];
@@ -113,7 +48,7 @@
     return out;
   }
 
-  function astar(start, end) {
+  function astar(cell, start, end) {
     var open = [{ rc: start, g: 0, f: 0 }];
     var cameFrom = {};
     var gScore = {};
@@ -142,7 +77,7 @@
         }
         return path;
       }
-      var ns = neighbors(rc);
+      var ns = neighbors(cell, rc);
       for (var i = 0; i < ns.length; i++) {
         var next = ns[i];
         var tentative = gScore[key(rc)] + 1;
@@ -157,47 +92,174 @@
     return [];
   }
 
-  var start = [0, 0];
-  var end = [R - 1, C - 1];
-  var path = astar(start, end);
-
-  if (path.length > 0) {
-    var d = "M";
-    for (var p = 0; p < path.length; p++) {
-      var rr = path[p][0];
-      var cc = path[p][1];
-      var px = cc * cw + cw / 2;
-      var py = rr * ch + ch / 2;
-      d += (p === 0 ? "" : " L") + px + "," + py;
-    }
-    var pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    pathEl.setAttribute("d", d);
-    pathEl.setAttribute("fill", "none");
-    pathEl.setAttribute("stroke", "currentColor");
-    pathEl.setAttribute("stroke-width", "2");
-    pathEl.setAttribute("stroke-linecap", "round");
-    pathEl.setAttribute("stroke-linejoin", "round");
-    pathEl.setAttribute("opacity", "0.6");
-    svg.appendChild(pathEl);
-  }
-
-  var pathEl = path.length > 0 ? svg.lastChild : null;
-  container.appendChild(svg);
-
-  if (pathEl) {
-    var totalLength = pathEl.getTotalLength();
-    var maxSteps = 10;
-    var pathStep = 0;
-
-    pathEl.setAttribute("stroke-dasharray", totalLength);
-    pathEl.setAttribute("stroke-dashoffset", totalLength);
-    pathEl.style.transition = "stroke-dashoffset 0.4s ease-out";
-
-    document.addEventListener("click", function () {
-      if (pathStep < maxSteps) {
-        pathStep++;
-        pathEl.setAttribute("stroke-dashoffset", totalLength * (1 - pathStep / maxSteps));
+  function generateCell() {
+    var cell = [];
+    for (var r = 0; r < R; r++) {
+      cell[r] = [];
+      for (var c = 0; c < C; c++) {
+        cell[r][c] = { n: false, s: false, e: false, w: false };
       }
-    });
+    }
+    function carve(r, c) {
+      var order = shuffle([0, 1, 2, 3]);
+      for (var i = 0; i < 4; i++) {
+        var d = dirs[order[i]];
+        var nr = r + d.dr;
+        var nc = c + d.dc;
+        if (nr >= 0 && nr < R && nc >= 0 && nc < C && !cell[nr][nc].n && !cell[nr][nc].s && !cell[nr][nc].e && !cell[nr][nc].w) {
+          cell[r][c][d.out] = true;
+          cell[nr][nc][d.in] = true;
+          carve(nr, nc);
+        }
+      }
+    }
+    carve(0, 0);
+    return cell;
   }
+
+  function buildSvg(cell) {
+    var cw = W / C;
+    var ch = H / R;
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    var walls = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    walls.setAttribute("stroke", "currentColor");
+    walls.setAttribute("stroke-width", "0.32");
+    walls.setAttribute("opacity", "0.35");
+
+    for (var r = 0; r < R; r++) {
+      for (var c = 0; c < C; c++) {
+        var x0 = c * cw;
+        var y0 = r * ch;
+        if (!cell[r][c].n) {
+          var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          l.setAttribute("x1", x0);
+          l.setAttribute("y1", y0);
+          l.setAttribute("x2", x0 + cw);
+          l.setAttribute("y2", y0);
+          walls.appendChild(l);
+        }
+        if (!cell[r][c].w) {
+          var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          l.setAttribute("x1", x0);
+          l.setAttribute("y1", y0);
+          l.setAttribute("x2", x0);
+          l.setAttribute("y2", y0 + ch);
+          walls.appendChild(l);
+        }
+        if (r === R - 1) {
+          var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          l.setAttribute("x1", x0);
+          l.setAttribute("y1", y0 + ch);
+          l.setAttribute("x2", x0 + cw);
+          l.setAttribute("y2", y0 + ch);
+          walls.appendChild(l);
+        }
+      }
+    }
+    svg.appendChild(walls);
+
+    var start = [0, 0];
+    var end = [R - 1, C - 1];
+    var path = astar(cell, start, end);
+    var pathEl = null;
+
+    if (path.length > 0) {
+      var d = "M";
+      for (var p = 0; p < path.length; p++) {
+        var rr = path[p][0];
+        var cc = path[p][1];
+        var px = cc * cw + cw / 2;
+        var py = rr * ch + ch / 2;
+        d += (p === 0 ? "" : " L") + px + "," + py;
+      }
+      pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pathEl.setAttribute("d", d);
+      pathEl.setAttribute("fill", "none");
+      pathEl.setAttribute("stroke", "currentColor");
+      pathEl.setAttribute("stroke-width", "1.05");
+      pathEl.setAttribute("stroke-linecap", "round");
+      pathEl.setAttribute("stroke-linejoin", "round");
+      pathEl.setAttribute("opacity", "0.6");
+      svg.appendChild(pathEl);
+    }
+
+    return { svg: svg, pathEl: pathEl };
+  }
+
+  function setPathProgress(progress) {
+    if (!pathState.pathEl || !pathState.totalLength) return;
+    pathState.pathEl.setAttribute(
+      "stroke-dashoffset",
+      pathState.totalLength * (1 - progress)
+    );
+  }
+
+  function syncStep(step, maxStep) {
+    if (!pathState.linkedToReveal) return;
+    setPathProgress(maxStep > 0 ? step / maxStep : 0);
+  }
+
+  function advancePlay() {
+    if (pathState.linkedToReveal || pathState.playProgress >= 1) return;
+    pathState.playProgress = Math.min(
+      1,
+      pathState.playProgress + 1 / pathState.maxPlaySteps
+    );
+    setPathProgress(pathState.playProgress);
+  }
+
+  function bindPlayHandler() {
+    if (pathClickHandler) return;
+    pathClickHandler = function (e) {
+      if (e.target.closest(".maze-reset")) return;
+      advancePlay();
+    };
+    document.addEventListener("click", pathClickHandler);
+  }
+
+  function unbindPlayHandler() {
+    if (!pathClickHandler) return;
+    document.removeEventListener("click", pathClickHandler);
+    pathClickHandler = null;
+  }
+
+  function install(playMode) {
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+
+    unbindPlayHandler();
+    pathState.pathEl = null;
+    pathState.totalLength = 0;
+    pathState.linkedToReveal = !playMode;
+    pathState.playProgress = 0;
+
+    var cell = generateCell();
+    var built = buildSvg(cell);
+    container.appendChild(built.svg);
+
+    if (built.pathEl) {
+      pathState.pathEl = built.pathEl;
+      pathState.totalLength = built.pathEl.getTotalLength();
+      pathState.pathEl.setAttribute("stroke-dasharray", pathState.totalLength);
+      pathState.pathEl.style.transition = "stroke-dashoffset 0.4s ease-out";
+      setPathProgress(0);
+      if (playMode) {
+        bindPlayHandler();
+      }
+    }
+  }
+
+  install(false);
+
+  window.jananiMaze = {
+    reset: function () {
+      install(true);
+    },
+    syncStep: syncStep
+  };
 })();
