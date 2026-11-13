@@ -194,6 +194,11 @@ header {
   padding-top: 0;
 }
 
+.tagline .pin {
+  font-style: normal;
+  display: inline-block;
+}
+
 a {
   color: var(--ink);
   text-decoration: none;
