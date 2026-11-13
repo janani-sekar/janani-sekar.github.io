@@ -2,7 +2,8 @@
   const puzzle = document.getElementById("puzzle");
   const sidebar = document.querySelector(".sidebar");
   const resetBtn = document.getElementById("graphic-reset");
-  const maxStep = 4;
+  const steps = Array.prototype.slice.call(document.querySelectorAll("#puzzle .step"));
+  const maxStep = 5;
   let step = 0;
   const mobileMq = window.matchMedia("(max-width: 720px)");
   let scrollRaf = 0;
@@ -14,6 +15,9 @@
   function setStep(n) {
     step = Math.min(maxStep, Math.max(0, n));
     puzzle.className = "reveal-step-" + step;
+    steps.forEach(function (el) {
+      el.classList.toggle("is-shown", Number(el.dataset.step) <= step);
+    });
     document.body.classList.toggle("reveal-complete", step === maxStep);
     if (sidebar) {
       sidebar.setAttribute("aria-hidden", step === maxStep ? "false" : "true");

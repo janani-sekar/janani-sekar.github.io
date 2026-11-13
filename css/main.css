@@ -34,7 +34,7 @@ body {
 /* Fixed width and height so the page never reflows as the graphic or its
    button change. */
 .sidebar {
-  flex: 0 0 clamp(150px, 15vw, 210px);
+  flex: 0 0 clamp(180px, 18vw, 250px);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -99,32 +99,18 @@ body {
   visibility: hidden;
   transform: translateY(0.5em);
   transition: opacity 0.6s ease, transform 0.6s ease, visibility 0s linear 0.6s;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.6rem;
 }
 
 header.step {
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 .step:last-child {
   margin-bottom: 0;
 }
 
-#puzzle.reveal-step-0 .step[data-step="0"],
-#puzzle.reveal-step-1 .step[data-step="0"],
-#puzzle.reveal-step-1 .step[data-step="1"],
-#puzzle.reveal-step-2 .step[data-step="0"],
-#puzzle.reveal-step-2 .step[data-step="1"],
-#puzzle.reveal-step-2 .step[data-step="2"],
-#puzzle.reveal-step-3 .step[data-step="0"],
-#puzzle.reveal-step-3 .step[data-step="1"],
-#puzzle.reveal-step-3 .step[data-step="2"],
-#puzzle.reveal-step-3 .step[data-step="3"],
-#puzzle.reveal-step-4 .step[data-step="0"],
-#puzzle.reveal-step-4 .step[data-step="1"],
-#puzzle.reveal-step-4 .step[data-step="2"],
-#puzzle.reveal-step-4 .step[data-step="3"],
-#puzzle.reveal-step-4 .step[data-step="4"] {
+.step.is-shown {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -135,15 +121,32 @@ header {
   text-align: center;
 }
 
+.headshot-frame {
+  position: relative;
+  width: clamp(6.5rem, 28vw, 9rem);
+  margin: 0 auto 1.2rem;
+}
+
 .headshot {
   display: block;
-  width: clamp(6.5rem, 28vw, 9rem);
+  width: 100%;
   height: auto;
   aspect-ratio: 1;
-  margin: 0 auto 1rem;
-  border-radius: 4px;
+  border-radius: 3px;
   object-fit: cover;
-  border: 1px solid var(--rule);
+}
+
+/* Hand-drawn frame, drawn by doodle.js just outside the photo. */
+.frame-doodle {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  overflow: visible;
+  color: var(--ink);
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 .name {
@@ -155,6 +158,9 @@ header {
 }
 
 .invite {
+  height: 1.6rem;
+  line-height: 1.6rem;
+  margin-bottom: -1.6rem !important;
   font-size: 0.85rem;
   font-style: italic;
   color: var(--muted);
@@ -172,7 +178,7 @@ header {
   text-decoration-color: var(--ink);
 }
 
-#puzzle.reveal-step-4 .invite {
+#puzzle:not(.reveal-step-0) .invite {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -186,7 +192,9 @@ header {
 }
 
 .tagline {
-  font-style: italic;
+  font-family: var(--display);
+  font-weight: 300;
+  letter-spacing: 0.02em;
   text-align: center;
 }
 
@@ -197,6 +205,13 @@ header {
 .tagline .pin {
   font-style: normal;
   display: inline-block;
+}
+
+.pin .doodle {
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: -0.24em;
+  margin-right: 0.15em;
 }
 
 a {
