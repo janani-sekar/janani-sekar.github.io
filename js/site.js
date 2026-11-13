@@ -1,7 +1,7 @@
 (function () {
   const puzzle = document.getElementById("puzzle");
   const sidebar = document.querySelector(".sidebar");
-  const mazeResetBtn = document.getElementById("maze-reset");
+  const resetBtn = document.getElementById("graphic-reset");
   const maxStep = 4;
   let step = 0;
   const mobileMq = window.matchMedia("(max-width: 720px)");
@@ -18,11 +18,11 @@
     if (sidebar) {
       sidebar.setAttribute("aria-hidden", step === maxStep ? "false" : "true");
     }
-    if (mazeResetBtn) {
-      mazeResetBtn.hidden = step !== maxStep;
+    if (resetBtn) {
+      resetBtn.hidden = step !== maxStep;
     }
-    if (window.jananiMaze && typeof window.jananiMaze.syncStep === "function") {
-      window.jananiMaze.syncStep(step, maxStep);
+    if (window.jananiGraphic && typeof window.jananiGraphic.syncStep === "function") {
+      window.jananiGraphic.syncStep(step, maxStep);
     }
     applyMobileScrollShell();
   }
@@ -61,7 +61,7 @@
   }
 
   document.addEventListener("click", function (e) {
-    if (e.target.closest(".maze-reset")) return;
+    if (e.target.closest(".graphic-reset")) return;
     advance();
   });
 
@@ -99,13 +99,13 @@
   }
   window.addEventListener("resize", onLayoutChange);
 
-  if (mazeResetBtn) {
-    mazeResetBtn.addEventListener("click", function (e) {
+  if (resetBtn) {
+    resetBtn.addEventListener("click", function (e) {
       e.stopPropagation();
       e.preventDefault();
       if (step !== maxStep) return;
-      if (window.jananiMaze && typeof window.jananiMaze.reset === "function") {
-        window.jananiMaze.reset();
+      if (window.jananiGraphic && typeof window.jananiGraphic.reset === "function") {
+        window.jananiGraphic.reset();
       }
     });
   }
